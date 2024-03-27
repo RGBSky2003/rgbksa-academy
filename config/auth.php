@@ -36,7 +36,7 @@ return [
     */
 
     'guards' => [
-        
+
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
@@ -45,6 +45,11 @@ return [
         'api' => [
             'driver' => 'jwt',
             'provider' => 'users',
+        ],
+        'client' => [
+            'driver' => 'jwt',
+            'provider' => 'client',
+            'hash' => false,
         ],
     ],
 
@@ -71,10 +76,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'client' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
     ],
 
     /*

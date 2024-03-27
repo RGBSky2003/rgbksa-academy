@@ -48,6 +48,11 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    public function getAuthIdentifierName(): string
+    {
+        return 'id';
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -58,8 +63,8 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    // public function requests()
-    // {
-    //     return $this->hasMany(ServiceRequest::class);
-    // }
+    public function requests()
+    {
+        return $this->hasMany(ServiceRequest::class);
+    }
 }

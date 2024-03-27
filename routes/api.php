@@ -47,32 +47,41 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::post('/login', [AuthController::class, 'login']);
 
-    Route::post('/logout', [AuthController::class, 'logout'])/* ->middleware('jwt.verify') */;
-    
-    Route::post('/refresh',[AuthController::class, 'refresh'])/* ->middleware('jwt.verify') */;
+
 });
 
 
 ## User Routes ##
 
-Route::group(['prefix' => 'user'/* , 'middleware' => 'jwt.verify' */], function () {
+  Route::middleware(['auth:client'])->group(function () {
 
-    Route::get('/profile/{id}', [AuthController::class, 'userProfile']);
+        Route::get('/test-auth', function (Request $request){
+            return "success";
+        });
+      Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::post('/edit/{id}', [UserController::class, 'edit']);
-    
-     Route::post('/delete-myphoto/{user_id}',[UserController::class, 'deletePhoto']);
+    Route::group(['prefix' => 'user'], function () {
 
-    Route::post('/password/change', [UserController::class, 'changePassword']);
+        Route::get('/profile', [AuthController::class, 'userProfile']);
+
+        Route::post('/edit', [UserController::class, 'edit']);
+
+        Route::post('/delete-account', [UserController::class, 'deleteAccount']);
+
+
+        Route::post('/delete-myphoto/{user_id}',[UserController::class, 'deletePhoto']);
+
+        Route::post('/change-password', [UserController::class, 'changePassword']);
+    });
+
 });
-
 
 ## Service Request Routes ##
 
-Route::group(['prefix' => 'request'/* , 'middleware' => 'jwt.verify' */], function () {
+Route::group(['prefix' => 'request'], function () {
 
     Route::post('/new/{user_id}', [ServiceRequestController::class, 'store']);
-    
+
     Route::get('/all', [ServiceRequestController::class, 'getAll']);
 
     Route::get('/{id}', [ServiceRequestController::class, 'get']);
@@ -86,7 +95,7 @@ Route::group(['prefix' => 'request'/* , 'middleware' => 'jwt.verify' */], functi
 
 ## Services ##
 
-Route::group(['prefix' => 'services'/* , 'middleware' => 'jwt.verify' */], function () {
+Route::group(['prefix' => 'services'], function () {
 
     Route::get('all', [ServiceController::class , 'getAll']);
 });
