@@ -61,7 +61,7 @@ Route::group(['prefix' => 'auth'], function () {
         });
    Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::group(['prefix' => 'user'], function () {
+  Route::group(['prefix' => 'user'], function () {
 
         Route::get('/profile', [AuthController::class, 'userProfile']);
 
@@ -69,6 +69,7 @@ Route::group(['prefix' => 'auth'], function () {
 
         Route::post('/delete-account', [UserController::class, 'deleteAccount']);
 
+        Route::post('/change-pic', [UserController::class, 'editPhoto']);
 
         Route::post('/delete-myphoto/{user_id}',[UserController::class, 'deletePhoto']);
 

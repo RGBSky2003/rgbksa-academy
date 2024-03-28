@@ -15,12 +15,9 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller {
     public function edit( Request $request ) {
-        try {
+        
             $user = auth()->user();
-            // Fetch the authenticated user
-        } catch ( Exception $e ) {
-            return response()->json( [ 'message' => 'User not found' ] );
-        }
+
 
         $validator = Validator::make( $request->only( [ 'first_name', 'last_name', 'email', 'date_of_birth', 'country' ] ), [
             'first_name' => 'required|string|between:2,100',
@@ -34,28 +31,6 @@ class UserController extends Controller {
             return response()->json( [ 'messages' => $validator->errors()->all() ] );
         }
 
-        if ( $request->hasFile( 'profile_picture' ) ) {
-            $validate_profile_picture = Validator::make( $request->all(), [
-                'profile_picture' => 'image|max:2048', // Adjusted maximum file size
-            ], [
-                'profile_picture.image' => 'The profile picture must be an image',
-                'profile_picture.max' => 'The profile picture must not exceed 2MB',
-            ] );
-
-            if ( $validate_profile_picture->fails() ) {
-                return response()->json( [ 'messages' => $validate_profile_picture->errors()->all() ] );
-            }
-
-            if ( $user->profile_picture ) {
-                Storage::delete( 'public/profile_pictures/' . $user->profile_picture );
-            }
-
-            $file_name = time() . '_' . uniqid() . '_' . $user->id . '.' . $request->file( 'profile_picture' )->extension();
-
-            $request->file( 'profile_picture' )->storeAs( 'public/profile_pictures', $file_name );
-
-            $user->profile_picture = $file_name;
-        }
 
         $updateData = $request->only( [ 'date_of_birth', 'first_name', 'last_name', 'email', 'country' ] );
 
@@ -99,6 +74,34 @@ class UserController extends Controller {
 
     }
 
+
+    public function editPhoto(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:8048',
+        ]);
+
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Store the new photo with a custom name
+        $photoName = 'profile_' . time() . '.' . $request->photo->getClientOriginalExtension();
+        $photoPath = $request->file('photo')->storeAs('profile_photos', $photoName, 'public');
+
+        // Get the full path of the stored photo
+        $fullPath = asset('storage/' . $photoPath);
+
+        // Update user's photo and full path in the database
+        $user->profile_picture = $photoPath;
+        $user->profile_picture = $fullPath;
+        $user->update();
+
+        return response()->json(
+            ['message'=>'success',
+             'Photo'=>$user->profile_picture]);
+    }
+
     public function deleteAccount(Request $request)
     {
         $user=auth()->user();
@@ -106,7 +109,7 @@ class UserController extends Controller {
         if ( !Hash::check( $request->password, $user->password ) ) {
             return response()->json( [ 'message' => 'password is incorrect' ], 422 );
         }
-        
+
         $user->delete();
 
         return response()->json( [ 'message' => 'user delted successfully' ], 200 );

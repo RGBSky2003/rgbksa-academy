@@ -21,7 +21,7 @@ class ServiceRequestController extends Controller
 
         $validatedData = Validator::make($request->all(), [
             'email' => 'required|email',
-            'full_name' => 'required|string|min:10',
+            'full_name' => 'required|string',
             'phone_number' => 'required|numeric'
         ],[
             'email.required'            => 'Please enter your email',
@@ -150,7 +150,7 @@ class ServiceRequestController extends Controller
 
             $new_request->save();
         }
-    
+
         return response()->json(['message' => 'Request Sent Successfully' , 'Request' => $new_request]);
     }
 
@@ -161,13 +161,13 @@ class ServiceRequestController extends Controller
         foreach($requests as $request)
         {
             $request->service_id = Service::find($request->service_id)->name;
-            
+
             if ($request->trans_type == 0 || $request->trans_type == 1)
                 $request->trans_type = ($request->trans_type ? 'Interpretation' : 'Translation');
 
             if($request->lang_from)
                 $request->lang_from = TransLang::where('id', $request->lang_from)->first()->name;
-        
+
             if($request->lang_to)
                 $request->lang_to = TransLang::where('id', $request->lang_to)->first()->name;
 
