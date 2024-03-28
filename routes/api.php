@@ -12,14 +12,15 @@
 
 
 use Illuminate\Http\Request;
+use App\Models\ServiceRequest;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\ServiceController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\API\ServiceController;
+use App\Http\Controllers\API\ContactUsController;
 use App\Http\Controllers\ServiceRequestController;
-use App\Models\ServiceRequest;
-use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +59,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('/test-auth', function (Request $request){
             return "success";
         });
-      Route::post('/logout', [AuthController::class, 'logout']);
+   Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::group(['prefix' => 'user'], function () {
 
@@ -73,25 +74,22 @@ Route::group(['prefix' => 'auth'], function () {
 
         Route::post('/change-password', [UserController::class, 'changePassword']);
     });
+ ## Service Request Routes ##
+    Route::group(['prefix' => 'request'], function () {
 
-});
+        Route::post('/new/{user_id}', [ServiceRequestController::class, 'store']);
 
-## Service Request Routes ##
+        Route::get('/all', [ServiceRequestController::class, 'getAll']);
 
-Route::group(['prefix' => 'request'], function () {
+        Route::get('/{id}', [ServiceRequestController::class, 'get']);
 
-    Route::post('/new/{user_id}', [ServiceRequestController::class, 'store']);
+        Route::post('/update/{id}', [ServiceRequestController::class, 'update']);
 
-    Route::get('/all', [ServiceRequestController::class, 'getAll']);
+        Route::post('/delete/{id}', [ServiceRequestController::class, 'delete']);
 
-    Route::get('/{id}', [ServiceRequestController::class, 'get']);
+    });
 
-    Route::post('/update/{id}', [ServiceRequestController::class, 'update']);
-
-    Route::post('/delete/{id}', [ServiceRequestController::class, 'delete']);
-
-});
-
+    });
 
 ## Services ##
 
@@ -100,6 +98,7 @@ Route::group(['prefix' => 'services'], function () {
     Route::get('all', [ServiceController::class , 'getAll']);
 });
 
+Route::post('contact-us', [ContactUsController::class , 'index']);
 
 ## Auth with Social Accounts ##
 

@@ -99,10 +99,14 @@ class UserController extends Controller {
 
     }
 
-    public function deleteAccount()
+    public function deleteAccount(Request $request)
     {
         $user=auth()->user();
 
+        if ( !Hash::check( $request->password, $user->password ) ) {
+            return response()->json( [ 'message' => 'password is incorrect' ], 422 );
+        }
+        
         $user->delete();
 
         return response()->json( [ 'message' => 'user delted successfully' ], 200 );
