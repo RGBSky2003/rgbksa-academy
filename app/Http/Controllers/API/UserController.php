@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller {
     public function edit( Request $request ) {
-        
+
             $user = auth()->user();
 
 
@@ -113,6 +113,25 @@ class UserController extends Controller {
         $user->delete();
 
         return response()->json( [ 'message' => 'user delted successfully' ], 200 );
+
+    }
+
+    public function destoyUserImg(Request $request)
+    {
+
+    $user = Auth::user();
+
+
+    $urlParts = explode('/', $user->profile_picture);
+    $filename = end($urlParts);
+
+
+    Storage::delete('public/profile_photos/' . $filename);
+
+    $user->profile_picture = null;
+    $user->update();
+
+    return response()->json(['message' => 'Profile picture deleted successfully.']);
 
     }
 }
