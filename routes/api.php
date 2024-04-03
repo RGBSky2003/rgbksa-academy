@@ -80,6 +80,8 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/delete-myphoto/{user_id}',[UserController::class, 'deletePhoto']);
 
         Route::delete('/destoy-img', [UserController::class, 'destoyUserImg']);
+
+        Route::post('/change-password', [UserController::class, 'changePassword']);
     });
  ## Service Request Routes ##
     Route::group(['prefix' => 'request'], function () {
