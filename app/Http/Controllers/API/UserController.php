@@ -57,23 +57,6 @@ class UserController extends Controller {
         return response()->json( [ 'message' => 'Password changed successfully' ] );
     }
 
-    public function deletePhoto( Request $request, $user_id ) {
-        $user = User::findOrFail( $user_id );
-        try {
-            if ( Storage::exists( 'public/profile_pictures/' . $user->profile_picture ) ) {
-
-                Storage::delete( 'public/profile_pictures/' . $user->profile_picture );
-
-                $user->profile_picture = 'me.png';
-                $user->update();
-                return response()->json( [ 'message' => 'Success' ] );
-            }
-        } catch ( Exception $e ) {
-            return response()->json( [ 'message' => 'Failed to delete or upload the profile picture' ], 404 );
-        }
-
-    }
-
 
     public function editPhoto(Request $request)
     {

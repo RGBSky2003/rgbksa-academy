@@ -48,7 +48,7 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::post('/login', [AuthController::class, 'login']);
 
-    Route::post('/reset', [AuthController::class, 'reset']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
     Route::post('/reset-link', [AuthController::class, 'sendResetLinkEmail']);
 
@@ -75,13 +75,11 @@ Route::group(['prefix' => 'auth'], function () {
 
         Route::post('/change-pic', [UserController::class, 'editPhoto']);
 
-        Route::post('/delete-myphoto/{user_id}',[UserController::class, 'deletePhoto']);
-
-        Route::post('/delete-myphoto/{user_id}',[UserController::class, 'deletePhoto']);
-
         Route::delete('/destoy-img', [UserController::class, 'destoyUserImg']);
 
         Route::post('/change-password', [UserController::class, 'changePassword']);
+
+
     });
  ## Service Request Routes ##
     Route::group(['prefix' => 'request'], function () {
